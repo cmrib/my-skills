@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TextInput, Platform, FlatList } from 'react-native'
 import { Button } from '../components/Button';
 import { SkillCard } from '../components/SkillCard';
@@ -7,16 +7,31 @@ export function Home() {
 
     const [newSkill, setNewSkill] = useState('')
     const [mySkills, setMySkills] = useState([])
+    const [greetings, setGreetings] = useState('')
 
     function handleAddNewSkill() {
         setMySkills(oldState => [...oldState, newSkill])
         setNewSkill('')
     }
 
+    useEffect(() => {
+        const currentHour = new Date().getHours();
+
+        if (currentHour < 12) {
+            setGreetings('Good morning')
+        } else if (currentHour >= 12 && currentHour < 18) {
+            setGreetings('Good afternoon')
+        } else {
+            setGreetings('Good night')
+        }
+
+    }, [])
+
     return (
         <>
             <View style={styles.container}>
-                <Text style={styles.title}>Welcome, Cicero</Text>
+
+                <Text style={styles.title}>{greetings}, Cicero</Text>
                 <TextInput
                     style={styles.input}
                     placeholder="New skill"
@@ -25,7 +40,10 @@ export function Home() {
                     value={newSkill}
                 />
 
-                <Button onPress={handleAddNewSkill} />
+                <Button
+                    onPress={handleAddNewSkill}
+                    newSkill={newSkill}
+                />
 
                 <Text style={[styles.title, { marginVertical: 20 }]}>My skills</Text>
 
